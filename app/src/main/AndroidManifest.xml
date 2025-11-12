@@ -20,13 +20,13 @@
         
         <activity
             android:name=".SublistasActivity"
-            android:parentActivityName=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop" />
         
         <activity
             android:name=".ItensActivity"
-            android:parentActivityName=".SublistasActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop" />
             
     </application>
 

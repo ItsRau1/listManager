@@ -28,6 +28,9 @@ class SublistasActivity : AppCompatActivity() {
         
         title = nomeLista
         
+        // Habilita o botão de voltar na ActionBar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        
         recyclerView = findViewById(R.id.recyclerViewSublistas)
         recyclerView.layoutManager = LinearLayoutManager(this)
         
@@ -37,6 +40,12 @@ class SublistasActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         carregarSublistas()
+    }
+    
+    override fun onSupportNavigateUp(): Boolean {
+        // Trata o botão "up" (voltar) da ActionBar como o botão voltar do sistema
+        onBackPressed()
+        return true
     }
     
     private fun carregarSublistas() {

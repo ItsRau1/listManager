@@ -37,6 +37,9 @@ class ItensActivity : AppCompatActivity() {
         
         title = "$nomeLista - $nomeSublista"
         
+        // Habilita o botão de voltar na ActionBar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        
         recyclerView = findViewById(R.id.recyclerViewItens)
         btnNovoItem = findViewById(R.id.btnNovoItem)
         
@@ -55,6 +58,12 @@ class ItensActivity : AppCompatActivity() {
         // Recarrega itens sempre que a Activity volta ao foco
         // Isso garante que transferências sejam refletidas
         carregarItens()
+    }
+    
+    override fun onSupportNavigateUp(): Boolean {
+        // Trata o botão "up" (voltar) da ActionBar como o botão voltar do sistema
+        onBackPressed()
+        return true
     }
     
     private fun carregarItens() {
