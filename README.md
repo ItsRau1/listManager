@@ -61,7 +61,7 @@ Uma aplicação Android para gerenciar listas e seus itens, armazenando os dados
   - Itens inativos vão para o final
   - Reativar mantém posição
 - ✅ **Sistema de temas claro/escuro** ⭐ NOVO
-  - Toggle na tela principal
+  - Toggle no menu (⋮) da barra superior
   - Tema claro: Off-white e Azul
   - Tema escuro: Preto suave e Roxo
   - Preferência persistente
@@ -108,15 +108,16 @@ Leite;2.5;true
 
 ### 1. Criar uma Nova Lista
 
-1. Na tela principal, clique no botão "**+ Nova Lista**"
-2. Digite o nome da lista
-3. Clique em "**Criar**"
+1. Na tela principal, toque no botão flutuante (**+**) no canto inferior direito
+2. No menu que se expande, escolha "**Nova lista**" (ou "**Importar lista**")
+3. Digite o nome da lista
+4. Clique em "**Criar**"
 
 ### 2. Adicionar Itens a uma Lista
 
 1. Clique em uma lista para visualizar as sublistas
 2. Escolha uma sublista: **Shibata** ou **Nagumo**
-3. Clique no botão "**+ Adicionar Item**"
+3. Toque no botão flutuante "**Adicionar item**"
 4. Preencha o nome e a quantidade do item
 5. Clique em "**Adicionar**"
 

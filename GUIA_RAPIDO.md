@@ -209,11 +209,11 @@ adb devices
 Após instalar:
 
 1. Abra o app "Gerenciador de Listas"
-2. Toque em "+ Nova Lista"
+2. Toque no botão flutuante (**+**) e depois em "Nova lista"
 3. Digite um nome (ex: "Compras")
 4. Toque em "Criar"
-5. Toque na lista criada
-6. Toque em "+ Adicionar Item"
+5. Toque na lista criada e escolha uma sublista (Shibata ou Nagumo)
+6. Toque no botão flutuante "Adicionar item"
 7. Preencha nome e quantidade
 8. Veja o item aparecer!
 

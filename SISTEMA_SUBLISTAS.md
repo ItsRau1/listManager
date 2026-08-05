@@ -61,7 +61,7 @@ Listas
 [Tela de Sublistas]
     ↓ Toque em "Shibata" ou "Nagumo"
 [Tela de Itens]
-    ↓ Botão "+ Adicionar Item"
+    ↓ FAB "Adicionar item"
 [Diálogo]
     ↓ Preencher Nome e Quantidade
     ↓ Clicar "Adicionar"
@@ -75,7 +75,7 @@ Listas
 ### Tela Principal (MainActivity)
 ```
 ┌─────────────────────────────────┐
-│  Minhas Listas                  │
+│  Minhas Listas             ⋮   │ ← Menu com "Alternar tema"
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Compras                   │  │ ← Toque para ver sublistas
@@ -84,14 +84,14 @@ Listas
 │  │ Tarefas                   │  │
 │  └───────────────────────────┘  │
 │                                 │
-│  [+ Nova Lista]                 │
+│                            (+) │ ← FAB (Nova lista/Importar)
 └─────────────────────────────────┘
 ```
 
 ### Tela de Sublistas (SublistasActivity) ⭐ NOVA
 ```
 ┌─────────────────────────────────┐
-│  Compras                  [←]   │
+│  ← Compras                      │
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Shibata (3 itens)         │  │ ← Toque para ver itens
@@ -105,7 +105,7 @@ Listas
 ### Tela de Itens (ItensActivity)
 ```
 ┌─────────────────────────────────┐
-│  Compras - Shibata        [←]   │
+│  ← Compras - Shibata            │
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Arroz                     │  │
@@ -116,7 +116,7 @@ Listas
 │  │ Quantidade: 3.5           │  │
 │  └───────────────────────────┘  │
 │                                 │
-│  [+ Adicionar Item]             │
+│                       [Adicionar item] │ ← FAB
 └─────────────────────────────────┘
 ```
 

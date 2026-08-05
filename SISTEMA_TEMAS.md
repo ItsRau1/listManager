@@ -29,10 +29,9 @@ O aplicativo agora possui um **sistema completo de temas** com toggle para alter
 ### Alternar Tema
 
 1. Abra o aplicativo
-2. Na tela principal, veja o **switch** no topo
-3. **🌙 Modo Escuro** - Texto ao lado do switch
-4. **Toque no switch** para alternar
-5. ✅ Tema muda instantaneamente!
+2. Toque no ícone de menu (**⋮**) na barra superior
+3. Toque em "**Alternar tema**"
+4. ✅ Tema muda instantaneamente!
 
 ### Persistência
 
@@ -48,19 +47,14 @@ O aplicativo agora possui um **sistema completo de temas** com toggle para alter
 
 ```
 ┌─────────────────────────────────┐
-│  🌙 Modo Escuro        [ OFF ]  │ ← Switch
+│  Minhas Listas             ⋮   │ ← Menu com "Alternar tema"
 ├─────────────────────────────────┤
-│                                 │
-│        Minhas Listas            │ ← Azul
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │   + Nova Lista            │  │ ← Botão azul
-│  └───────────────────────────┘  │
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Compras                   │  │
 │  └───────────────────────────┘  │
 │                                 │
+│                            (+) │ ← FAB (Nova lista/Importar)
 └─────────────────────────────────┘
 Background: Off-white (#F5F5F5)
 Texto: Cinza escuro
@@ -70,19 +64,14 @@ Texto: Cinza escuro
 
 ```
 ┌─────────────────────────────────┐
-│  🌙 Modo Escuro        [ ON  ]  │ ← Switch
+│  Minhas Listas             ⋮   │ ← Menu com "Alternar tema"
 ├─────────────────────────────────┤
-│                                 │
-│        Minhas Listas            │ ← Roxo
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │   + Nova Lista            │  │ ← Botão roxo
-│  └───────────────────────────┘  │
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Compras                   │  │
 │  └───────────────────────────┘  │
 │                                 │
+│                            (+) │ ← FAB (Nova lista/Importar)
 └─────────────────────────────────┘
 Background: Preto suave (#121212)
 Texto: Branco
@@ -147,21 +136,32 @@ class ThemeManager(private val context: Context) {
 }
 ```
 
-**4. MainActivity (Switch)**
+**4. MainActivity (menu do toolbar)**
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     // Aplica tema ANTES de setContentView
     themeManager = ThemeManager(this)
     themeManager.applyTheme(this)
-    
+
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    
-    // Configura switch
-    switchTheme.isChecked = themeManager.isDarkMode()
-    switchTheme.setOnCheckedChangeListener { _, isChecked ->
-        themeManager.setDarkMode(isChecked)
-        recreate() // Recria Activity com novo tema
+    setSupportActionBar(toolbar)
+}
+
+override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    menuInflater.inflate(R.menu.menu_main, menu)
+    atualizarIconeTema(menu) // ic_dark_mode ou ic_light_mode conforme o tema
+    return true
+}
+
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+        R.id.action_toggle_theme -> {
+            themeManager.setDarkMode(!themeManager.isDarkMode())
+            recreate() // Recria Activity com novo tema
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 }
 ```
@@ -198,21 +198,23 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ## 📱 UI Components
 
-### Switch Material
+### Item de Menu no Toolbar
 
-**Layout:**
+**Menu (menu_main.xml):**
 ```xml
-<com.google.android.material.switchmaterial.SwitchMaterial
-    android:id="@+id/switchTheme"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+<item
+    android:id="@+id/action_toggle_theme"
+    android:title="Alternar tema"
+    android:icon="@drawable/ic_dark_mode"
+    app:showAsAction="ifRoom" />
 ```
 
+O ícone alterna entre `ic_dark_mode`/`ic_light_mode` conforme o tema atual (atualizado em `onCreateOptionsMenu` via `atualizarIconeTema()`).
+
 **Características:**
-- ✅ Animação suave
-- ✅ Segue Material Design
+- ✅ Segue Material Design 3
 - ✅ Acessível
-- ✅ Feedback visual claro
+- ✅ Não ocupa espaço fixo na tela (fica na `MaterialToolbar`)
 
 ---
 
@@ -233,9 +235,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
    ↓
 7. setContentView() renderiza com tema correto
    ↓
-8. Switch configurado com estado salvo
+8. Ícone do menu configurado com estado salvo
    ↓
-9. [Usuário alterna switch]
+9. [Usuário toca em "Alternar tema" no menu]
    ↓
 10. Salva nova preferência
     ↓
@@ -344,8 +346,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
 |---------|---------|
 | **colors.xml** | + Cores para tema claro e escuro |
 | **themes.xml** | + Definição dos temas |
-| **activity_main.xml** | + Switch para alternar tema |
-| **MainActivity.kt** | + ThemeManager e listener do switch |
+| **activity_main.xml** | + Toolbar (`MaterialToolbar`) |
+| **menu_main.xml** | + Item de menu "Alternar tema" |
+| **MainActivity.kt** | + ThemeManager e handler do item de menu |
 | **SublistasActivity.kt** | + Aplicação do tema |
 | **ItensActivity.kt** | + Aplicação do tema |
 
@@ -365,16 +368,16 @@ override fun onCreate(savedInstanceState: Bundle?) {
 2. ✅ Tema claro aplicado
 3. ✅ Background off-white
 4. ✅ Azul como cor primária
-5. ✅ Switch está **desligado**
+5. ✅ Ícone do menu mostra "modo escuro" (lua)
 
 ### 3. Ativar Tema Escuro
 
-1. **Toque no switch** "Modo Escuro"
+1. Toque no menu (**⋮**) e depois em "**Alternar tema**"
 2. ✅ App recria instantaneamente
 3. ✅ Tema escuro aplicado
 4. ✅ Background preto suave
 5. ✅ Roxo como cor primária
-6. ✅ Switch está **ligado**
+6. ✅ Ícone do menu passa a mostrar "modo claro" (sol)
 
 ### 4. Testar Persistência
 
@@ -382,7 +385,6 @@ override fun onCreate(savedInstanceState: Bundle?) {
 2. **Feche o app completamente**
 3. Reabra o app
 4. ✅ Tema escuro mantido!
-5. ✅ Switch ainda ligado
 
 ### 5. Testar em Todas as Telas
 
@@ -395,7 +397,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 6. ✅ Ainda escuro
 
 **Alternar para Claro:**
-1. Na MainActivity, desligue o switch
+1. Na MainActivity, use o menu (**⋮**) → "Alternar tema" novamente
 2. ✅ Volta ao tema claro
 3. Entre nas outras telas
 4. ✅ Todas claras

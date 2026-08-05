@@ -260,10 +260,10 @@ private fun carregarItens() {
 
 | Funcionalidade | Ação | Confirmação | Resultado |
 |----------------|------|-------------|-----------|
-| **Criar Lista** | Botão "+ Nova Lista" | Digitar nome | Lista criada |
-| **Abrir Lista** | Tocar na lista | Nenhuma | Abre itens |
+| **Criar Lista** | FAB (+) → "Nova lista" | Digitar nome | Lista criada |
+| **Abrir Lista** | Tocar na lista | Nenhuma | Abre sublistas |
 | **Excluir Lista** | Long press na lista | Diálogo | Lista deletada |
-| **Adicionar Item** | Botão "+ Adicionar Item" | Preencher campos | Item adicionado |
+| **Adicionar Item** | FAB "Adicionar item" | Preencher campos | Item adicionado |
 | **Excluir Item** | Long press no item | Diálogo | Item removido |
 
 ---

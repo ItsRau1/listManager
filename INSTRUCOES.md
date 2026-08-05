@@ -102,14 +102,14 @@ Se houver erro na sincronização:
 ### Primeira Execução
 
 1. O app abre na tela principal (vazia)
-2. Clique em "+ Nova Lista" para criar sua primeira lista
+2. Toque no botão flutuante (**+**) e depois em "Nova lista" para criar sua primeira lista
 3. Digite um nome (ex: "Compras", "Tarefas", etc.)
 4. Clique em "Criar"
 
 ### Adicionando Itens
 
-1. Clique na lista que você criou
-2. Clique em "+ Adicionar Item"
+1. Clique na lista que você criou e escolha uma sublista (Shibata ou Nagumo)
+2. Toque no botão flutuante "Adicionar item"
 3. Digite:
    - **Nome**: nome do item (ex: "Arroz")
    - **Quantidade**: número com ou sem decimais (ex: "5" ou "5.5")

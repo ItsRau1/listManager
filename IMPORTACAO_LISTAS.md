@@ -250,18 +250,14 @@ private fun parseItem(linha: String): Item? {
 
 ```
 ┌─────────────────────────────────┐
-│  🌙 Modo Escuro        [SWITCH] │
+│  Minhas Listas             ⋮   │ ← Menu com "Alternar tema"
 ├─────────────────────────────────┤
-│        Minhas Listas            │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │   + Nova Lista            │  │ ← Criar manual
-│  └───────────────────────────┘  │
-│  ┌───────────────────────────┐  │
-│  │   📋 Importar Lista       │  │ ← NOVO!
-│  └───────────────────────────┘  │
 │                                 │
 │  Lista de listas...             │
+│                                 │
+│                       [Importar]│ ← FAB expandido
+│                       [Nova lista]│
+│                            (+) │
 └─────────────────────────────────┘
 ```
 

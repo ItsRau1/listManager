@@ -153,7 +153,7 @@ No seu dispositivo Android:
 Você verá a tela principal vazia.
 
 **Passos:**
-1. Toque no botão "**+ Nova Lista**"
+1. Toque no botão flutuante (**+**) e depois em "**Nova lista**"
 2. Digite um nome (exemplo: "Compras do Mês")
 3. Toque em "**Criar**"
 
@@ -162,8 +162,8 @@ A lista aparecerá na tela!
 ### 3. Adicionar Itens
 
 **Passos:**
-1. Toque na lista "Compras do Mês"
-2. Toque no botão "**+ Adicionar Item**"
+1. Toque na lista "Compras do Mês" e escolha uma sublista (Shibata ou Nagumo)
+2. Toque no botão flutuante "**Adicionar item**"
 3. Preencha:
    - **Nome:** Arroz
    - **Quantidade:** 5
@@ -226,9 +226,7 @@ Cada linha = 1 item no formato: `nome;quantidade`
 ### Tela Principal
 ```
 ┌─────────────────────────────────┐
-│  Minhas Listas                  │
-│                                 │
-│  [+ Nova Lista]                 │
+│  Minhas Listas             ⋮   │ ← Menu com "Alternar tema"
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Compras do Mês            │  │
@@ -241,6 +239,7 @@ Cada linha = 1 item no formato: `nome;quantidade`
 │  ┌───────────────────────────┐  │
 │  │ Materiais de Construção   │  │
 │  └───────────────────────────┘  │
+│                            (+) │ ← FAB (Nova lista/Importar)
 └─────────────────────────────────┘
 ```
 
@@ -248,8 +247,6 @@ Cada linha = 1 item no formato: `nome;quantidade`
 ```
 ┌─────────────────────────────────┐
 │  ← Compras do Mês               │
-│                                 │
-│  [+ Adicionar Item]             │
 │                                 │
 │  ┌───────────────────────────┐  │
 │  │ Arroz                     │  │
@@ -265,6 +262,7 @@ Cada linha = 1 item no formato: `nome;quantidade`
 │  │ Açúcar                    │  │
 │  │ Quantidade: 2.0           │  │
 │  └───────────────────────────┘  │
+│                       [Adicionar item] │ ← FAB
 └─────────────────────────────────┘
 ```
 
