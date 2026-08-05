@@ -78,10 +78,10 @@ class StorageManager(private val context: Context) {
             emptyList()
         }
         
-        // Combina ordem salva com novas listas
+        // Combina ordem salva com novas listas (novas sem ordem aparecem primeiro)
         val resultado = mutableListOf<String>()
+        resultado.addAll(todasListas.filter { it !in ordemSalva }.sortedDescending())
         resultado.addAll(ordemSalva.filter { it in todasListas })
-        resultado.addAll(todasListas.filter { it !in ordemSalva }.sorted())
         
         return resultado
     }
@@ -98,11 +98,17 @@ class StorageManager(private val context: Context) {
         salvarLista(lista)
     }
     
-    // Cria uma nova lista vazia
+    // Cria uma nova lista vazia e a insere no topo da ordem
     fun criarNovaLista(nomeLista: String): Boolean {
         val arquivo = File(listsDir, "$nomeLista.txt")
         return if (!arquivo.exists()) {
             arquivo.createNewFile()
+            val ordemAtual = if (orderFile.exists()) {
+                orderFile.readLines().filter { it.isNotBlank() }
+            } else {
+                emptyList()
+            }
+            salvarOrdemListas(listOf(nomeLista) + ordemAtual)
             true
         } else {
             false

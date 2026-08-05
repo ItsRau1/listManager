@@ -168,10 +168,10 @@ class MainActivity : AppCompatActivity() {
                     // Salva a lista
                     storageManager.salvarLista(lista)
                     
-                    // Adiciona na ordem
+                    // Adiciona no topo da ordem
                     val listasAtuais = storageManager.listarTodasListas().toMutableList()
                     if (!listasAtuais.contains(lista.nome)) {
-                        listasAtuais.add(lista.nome)
+                        listasAtuais.add(0, lista.nome)
                         storageManager.salvarOrdemListas(listasAtuais)
                     }
                     
