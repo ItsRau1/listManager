@@ -1,57 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- Toggle de Tema -->
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
-        
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="🌙 Modo Escuro"
-            android:textSize="16sp"/>
-        
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+        android:elevation="0dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Minhas Listas"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.ListManager.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:title="Minhas Listas" />
 
-    <Button
-        android:id="@+id/btnNovaLista"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="+ Nova Lista"
-        android:layout_marginBottom="8dp"/>
-
-    <Button
-        android:id="@+id/btnImportarLista"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="📋 Importar Lista"
-        android:layout_marginBottom="16dp"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewListas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="88dp"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</LinearLayout>
+    <!-- Scrim: escurece o fundo quando o menu do FAB está aberto -->
+    <View
+        android:id="@+id/scrimFab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#52000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:id="@+id/fabContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabImportar"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Importar lista"
+            android:visibility="invisible"
+            android:alpha="0"
+            android:translationY="24dp"
+            app:icon="@drawable/ic_upload_file" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fabNovaListaOpcao"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Nova lista"
+            android:visibility="invisible"
+            android:alpha="0"
+            android:translationY="24dp"
+            app:icon="@drawable/ic_add" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Adicionar lista"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.ListManager.FabCircular"
+            app:elevation="0dp"
+            app:hoveredFocusedTranslationZ="0dp"
+            app:pressedTranslationZ="0dp"
+            app:srcCompat="@drawable/ic_add" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

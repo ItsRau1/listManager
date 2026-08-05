@@ -5,12 +5,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.appbar.MaterialToolbar
 
 class SublistasActivity : AppCompatActivity() {
-    
+
     private lateinit var storageManager: StorageManager
     private lateinit var themeManager: ThemeManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var toolbar: MaterialToolbar
     private lateinit var nomeLista: String
     private var lista: Lista? = null
     private var adapter: SublistasAdapter? = null
@@ -25,14 +28,17 @@ class SublistasActivity : AppCompatActivity() {
         
         storageManager = StorageManager(this)
         nomeLista = intent.getStringExtra("NOME_LISTA") ?: ""
-        
-        title = nomeLista
-        
+
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.title = nomeLista
+        setSupportActionBar(toolbar)
+
         // Habilita o botão de voltar na ActionBar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        
+
         recyclerView = findViewById(R.id.recyclerViewSublistas)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         
         carregarSublistas()
     }

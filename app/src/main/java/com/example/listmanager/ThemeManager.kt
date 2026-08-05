@@ -2,6 +2,7 @@ package com.example.listmanager
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 
 class ThemeManager(private val context: Context) {
@@ -50,5 +51,13 @@ class ThemeManager(private val context: Context) {
      */
     fun applyTheme(activity: AppCompatActivity) {
         activity.setTheme(getCurrentTheme())
+
+        // Sem isso, o Android desenha um degradê escuro por cima da barra de
+        // navegação/gestos para dar contraste. Com a barra de cor clara (M3)
+        // esse degradê aparece como uma sombra de "menu" indevida no rodapé.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            activity.window.isNavigationBarContrastEnforced = false
+            activity.window.isStatusBarContrastEnforced = false
+        }
     }
 }

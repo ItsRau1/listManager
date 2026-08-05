@@ -1,22 +1,30 @@
 package com.example.listmanager
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import java.util.Collections
 
 class ItensActivity : AppCompatActivity() {
-    
+
     private lateinit var storageManager: StorageManager
     private lateinit var themeManager: ThemeManager
     private lateinit var recyclerView: RecyclerView
-    private lateinit var btnNovoItem: Button
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var fabNovoItem: ExtendedFloatingActionButton
     private lateinit var nomeLista: String
     private lateinit var nomeSublista: String
     private var lista: Lista? = null
@@ -34,18 +42,22 @@ class ItensActivity : AppCompatActivity() {
         storageManager = StorageManager(this)
         nomeLista = intent.getStringExtra("NOME_LISTA") ?: ""
         nomeSublista = intent.getStringExtra("NOME_SUBLISTA") ?: ""
-        
-        title = "$nomeLista - $nomeSublista"
-        
+
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.title = "$nomeLista - $nomeSublista"
+        setSupportActionBar(toolbar)
+
         // Habilita o botão de voltar na ActionBar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        
+
         recyclerView = findViewById(R.id.recyclerViewItens)
-        btnNovoItem = findViewById(R.id.btnNovoItem)
-        
+        fabNovoItem = findViewById(R.id.fabNovoItem)
+        aplicarInsetsNoFab(fabNovoItem)
+
         recyclerView.layoutManager = LinearLayoutManager(this)
-        
-        btnNovoItem.setOnClickListener {
+        (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+
+        fabNovoItem.setOnClickListener {
             mostrarDialogNovoItem()
         }
         
@@ -74,11 +86,11 @@ class ItensActivity : AppCompatActivity() {
     
     private fun atualizarAdapter() {
         val itens = sublista?.itens ?: emptyList()
-        
+
         if (adapter == null) {
             // Cria o adapter apenas na primeira vez
-            adapter = ItensAdapter(itens) { posicao -> 
-                mostrarDialogExcluirItem(posicao) 
+            adapter = ItensAdapter(itens) { posicao ->
+                mostrarDialogExcluirItem(posicao)
             }
             recyclerView.adapter = adapter
         } else {
@@ -86,14 +98,14 @@ class ItensActivity : AppCompatActivity() {
             adapter?.atualizarDados(itens)
         }
     }
-    
+
     private fun mostrarDialogNovoItem() {
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle("Novo Item")
         
         val layout = layoutInflater.inflate(R.layout.dialog_novo_item, null)
-        val inputNome = layout.findViewById<EditText>(R.id.editNomeItem)
-        val inputQuantidade = layout.findViewById<EditText>(R.id.editQuantidadeItem)
+        val inputNome = layout.findViewById<TextInputEditText>(R.id.editNomeItem)
+        val inputQuantidade = layout.findViewById<TextInputEditText>(R.id.editQuantidadeItem)
         
         builder.setView(layout)
         
@@ -127,7 +139,7 @@ class ItensActivity : AppCompatActivity() {
     private fun mostrarDialogExcluirItem(posicao: Int) {
         val item = sublista?.itens?.getOrNull(posicao) ?: return
         
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle("Excluir Item")
         builder.setMessage("Deseja realmente excluir o item \"${item.nome}\"?")
         
@@ -173,71 +185,87 @@ class ItensActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 
-                when (direction) {
-                    ItemTouchHelper.END -> {
-                        // Swipe direita → esquerda: Ativar/Inativar
-                        sublista?.let { sl ->
-                            val item = sl.itens[position]
-                            
-                            if (item.ativo) {
-                                // Inativa e move para o final
-                                item.ativo = false
-                                sl.itens.removeAt(position)
-                                sl.itens.add(item)
-                                Toast.makeText(this@ItensActivity, "Item inativado", Toast.LENGTH_SHORT).show()
-                            } else {
-                                // Ativa e mantém na posição
-                                item.ativo = true
-                                Toast.makeText(this@ItensActivity, "Item ativado", Toast.LENGTH_SHORT).show()
-                            }
-                            
-                            // Salva e atualiza
-                            lista?.let { storageManager.salvarLista(it) }
-                            atualizarAdapter()
-                        }
-                    }
-                    
-                    ItemTouchHelper.START -> {
-                        // Swipe esquerda → direita: Transferir entre sublistas
-                        lista?.let { l ->
+                // O ItemTouchHelper ainda está finalizando a própria animação/estado
+                // interno de swipe neste ponto. Mutar o adapter agora, de forma
+                // síncrona, é o que fazia o RecyclerView "pular" o scroll para o
+                // fim da lista. Adiar para o próximo frame evita a disputa.
+                recyclerView.post {
+                    when (direction) {
+                        ItemTouchHelper.END -> {
+                            // Swipe direita → esquerda: Ativar/Inativar
                             sublista?.let { sl ->
                                 val item = sl.itens[position]
-                                
-                                // Determina sublista de destino
-                                val sublistaDestino = if (nomeSublista == "Shibata") {
-                                    l.getSublista("Nagumo")
-                                } else {
-                                    l.getSublista("Shibata")
-                                }
-                                
-                                sublistaDestino?.let { dest ->
-                                    // Remove da origem
+
+                                // Remove no lugar antigo + insere no destino (fade), em vez de um
+                                // "move" — que fazia o RecyclerView rolar a tela para acompanhar
+                                // o destino.
+                                if (item.ativo) {
+                                    // Inativa e move para o final
+                                    item.ativo = false
                                     sl.itens.removeAt(position)
-                                    
-                                    // Adiciona no destino na posição correta
-                                    if (item.ativo) {
-                                        // Item ativo: insere no final dos ativos (antes dos inativos)
-                                        val indexPrimeiroInativo = dest.itens.indexOfFirst { !it.ativo }
-                                        if (indexPrimeiroInativo != -1) {
-                                            dest.itens.add(indexPrimeiroInativo, item)
+                                    sl.itens.add(item)
+                                    Toast.makeText(this@ItensActivity, "Item inativado", Toast.LENGTH_SHORT).show()
+
+                                    lista?.let { storageManager.salvarLista(it) }
+                                    adapter?.moverItem(position, sl.itens.size - 1, sl.itens) ?: atualizarAdapter()
+                                } else {
+                                    // Ativa e sobe para logo após o último item ativo
+                                    // (acima dos inativos, abaixo dos demais ativos)
+                                    item.ativo = true
+                                    sl.itens.removeAt(position)
+                                    val indexPrimeiroInativo = sl.itens.indexOfFirst { !it.ativo }
+                                    val destino = if (indexPrimeiroInativo != -1) indexPrimeiroInativo else sl.itens.size
+                                    sl.itens.add(destino, item)
+                                    Toast.makeText(this@ItensActivity, "Item ativado", Toast.LENGTH_SHORT).show()
+
+                                    lista?.let { storageManager.salvarLista(it) }
+                                    adapter?.moverItem(position, destino, sl.itens) ?: atualizarAdapter()
+                                }
+                            }
+                        }
+
+                        ItemTouchHelper.START -> {
+                            // Swipe esquerda → direita: Transferir entre sublistas
+                            lista?.let { l ->
+                                sublista?.let { sl ->
+                                    val item = sl.itens[position]
+
+                                    // Determina sublista de destino
+                                    val sublistaDestino = if (nomeSublista == "Shibata") {
+                                        l.getSublista("Nagumo")
+                                    } else {
+                                        l.getSublista("Shibata")
+                                    }
+
+                                    sublistaDestino?.let { dest ->
+                                        // Remove da origem
+                                        sl.itens.removeAt(position)
+
+                                        // Adiciona no destino na posição correta
+                                        if (item.ativo) {
+                                            // Item ativo: insere no final dos ativos (antes dos inativos)
+                                            val indexPrimeiroInativo = dest.itens.indexOfFirst { !it.ativo }
+                                            if (indexPrimeiroInativo != -1) {
+                                                dest.itens.add(indexPrimeiroInativo, item)
+                                            } else {
+                                                dest.itens.add(item)
+                                            }
                                         } else {
+                                            // Item inativo: insere no final
                                             dest.itens.add(item)
                                         }
-                                    } else {
-                                        // Item inativo: insere no final
-                                        dest.itens.add(item)
+
+                                        val nomeDestino = if (nomeSublista == "Shibata") "Nagumo" else "Shibata"
+                                        Toast.makeText(
+                                            this@ItensActivity,
+                                            "Item transferido para $nomeDestino",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        // Salva e recarrega
+                                        storageManager.salvarLista(l)
+                                        carregarItens()
                                     }
-                                    
-                                    val nomeDestino = if (nomeSublista == "Shibata") "Nagumo" else "Shibata"
-                                    Toast.makeText(
-                                        this@ItensActivity,
-                                        "Item transferido para $nomeDestino",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    
-                                    // Salva e recarrega
-                                    storageManager.salvarLista(l)
-                                    carregarItens()
                                 }
                             }
                         }
@@ -251,5 +279,17 @@ class ItensActivity : AppCompatActivity() {
         })
         
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun aplicarInsetsNoFab(fab: View) {
+        val margemBase = resources.getDimensionPixelSize(R.dimen.fab_margin)
+        ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
+            val barras = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = margemBase + barras.bottom
+                marginEnd = margemBase + barras.right
+            }
+            insets
+        }
     }
 }

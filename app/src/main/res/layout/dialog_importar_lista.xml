@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cole o texto da lista no formato:"
         android:textSize="14sp"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginBottom="8dp"/>
 
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="*Shibata*\n\n1 - Arroz 5Kg\n2,3 - Feijão 1Kg\n\n*Nagumo*\n\n2.5 - Mostarda\nTomate"
-        android:textSize="12sp"
-        android:fontFamily="monospace"
-        android:background="?attr/colorSurface"
-        android:padding="8dp"
         android:layout_marginBottom="16dp"
-        android:alpha="0.7"/>
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="?attr/colorSurfaceVariant">
 
-    <EditText
-        android:id="@+id/editTextImportacao"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="*Shibata*\n\n1 - Arroz 5Kg\n2,3 - Feijão 1Kg\n\n*Nagumo*\n\n2.5 - Mostarda\nTomate"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:padding="12dp"/>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:hint="Cole aqui o texto da lista..."
-        android:gravity="top|start"
-        android:inputType="textMultiLine"
-        android:scrollbars="vertical"
-        android:background="?attr/colorSurface"
-        android:padding="8dp"/>
+        android:hint="Cole aqui o texto da lista...">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextImportacao"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
